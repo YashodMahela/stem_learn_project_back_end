@@ -1,31 +1,37 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
+import "dotenv/config";
+import express from "express";
+import productRouter from "./api/product";
+import categoryRouter from "./api/category";
+import reviewRouter from "./api/review";
 import { connectDB } from "./infrastructure/db/index";
-
-dotenv.config();
+import globalErrorHandlingMiddleware from "./api/middleware/global-error-handling-middleware";
+import cors from "cors";
+import { orderRouter } from "./api/order";
+import { clerkMiddleware } from "@clerk/express";
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+
+// Middleware to parse JSON bodies
+app.use(express.json()); //It conversts the incomign json payload of a  request into a javascript object found in req.body
+
+app.use(clerkMiddleware());
+app.use(cors({ origin: "http://localhost:5173" }));
+
+// app.use((req, res, next) => {
+//   console.log("Hello from pre-middleware");
+//   next();
+// });
+
+app.use("/api/products", productRouter);
+app.use("/api/categories", categoryRouter);
+app.use("/api/reviews", reviewRouter);
+app.use("/api/orders", orderRouter);
+
+app.use(globalErrorHandlingMiddleware);
 
 connectDB();
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Routes
-app.get('/api/health', (req, res) => {
-    res.json({ message: 'E-commerce API is running!' });
-});
-
-// Error handling middleware
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-    console.error(err.stack);
-    res.status(500).json({ message: 'Something went wrong!' });
-});
-
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server is running on port ${PORT}`);
 });
