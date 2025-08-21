@@ -1,5 +1,5 @@
-// create model and schma of Order in mongodb
 import mongoose from "mongoose";
+
 const ItemSchema = new mongoose.Schema({
     productId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -41,5 +41,5 @@ const OrderSchema = new mongoose.Schema({
 });
 
 const Order = mongoose.model("Order", OrderSchema);
-
 export default Order;
+
