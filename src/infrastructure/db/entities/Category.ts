@@ -1,10 +1,10 @@
+//Create category data table schema in mongodb
 import mongoose from "mongoose";
 
 const categorySchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true,
-    },
+    name: { type: String, required: true },
+    description: { type: String, required: true },
+
 });
 
 const Category = mongoose.model("Category", categorySchema);

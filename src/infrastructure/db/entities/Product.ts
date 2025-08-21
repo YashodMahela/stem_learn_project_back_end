@@ -1,3 +1,4 @@
+
 import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema({
@@ -27,8 +28,11 @@ const productSchema = new mongoose.Schema({
         ref: "Review",
         default: [],
     },
+    description: { type: String, required: true },
+
 });
 
 const Product = mongoose.model("Product", productSchema);
 
 export default Product;
+
