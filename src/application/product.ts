@@ -4,6 +4,7 @@ import NotFoundError from "../domain/errors/not-found-error";
 
 import { Request, Response, NextFunction } from "express";
 import { CreateProductDTO } from "../domain/dto/product";
+import category from "../api/category";
 
 const getAllProducts = async (
   req: Request,
@@ -11,18 +12,41 @@ const getAllProducts = async (
   next: NextFunction
 ) => {
   try {
-    const categoryId = req.query.categoryId;
-    if (categoryId) {
-      const products = await Product.find({ categoryId });
-      res.json(products);
-    } else {
-      const products = await Product.find();
-      res.json(products);
+    const { category, color, sortBy, sortOrder } = req.query;
+    
+    // Build dynamic filter object
+    const filter: any = {};
+    
+    // Add category filter if provided
+    if (category) {
+      filter.categoryId = category;
     }
+    
+    // Add color filter if provided
+    if (color) {
+      filter.color_id = color;
+    }
+    let sort: any = {};
+    if (sortOrder && sortOrder !== 'default') {
+      // Sort by price when sortOrder is specified
+      const order = sortOrder === 'desc' ? -1 : 1;
+      sort.price = order;
+    }
+    // Execute query with filters and sorting
+    let query = Product.find(filter);
+    
+    // Apply sorting if specified
+    if (Object.keys(sort).length > 0) {
+      query = query.sort(sort);
+    }
+    
+    const products = await query;
+    res.json(products);
   } catch (error) {
     next(error);
   }
 };
+
 
 const createProduct = async (
   req: Request,
@@ -31,6 +55,7 @@ const createProduct = async (
 ) => {
   try {
     const result = CreateProductDTO.safeParse(req.body);
+    console.log(result);
     if (!result.success) {
       throw new ValidationError(result.error.message);
     }

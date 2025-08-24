@@ -15,14 +15,25 @@ const productSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    stripePriceId: {
+        type: String,
+        required: true,
+    },
+    color_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Color",
+        required: false,
+    },
     image: {
         type: String,
         required: true,
     },
+    
     stock: {
         type: Number,
-        required: true,
+        required: false,
     },
+
     reviews: {
         type: [mongoose.Schema.Types.ObjectId],
         ref: "Review",
