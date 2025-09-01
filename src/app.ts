@@ -15,7 +15,7 @@ const app = express();
 // Middleware to parse JSON bodies
 app.use(express.json()); //It conversts the incomign json payload of a  request into a javascript object found in req.body
 
-app.use(clerkMiddleware());
+// app.use(clerkMiddleware());
 app.use(cors({ origin: "http://localhost:5173" }));
 
 // app.use((req, res, next) => {
