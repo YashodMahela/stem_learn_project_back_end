@@ -16,7 +16,8 @@ const app = express();
 app.use(express.json()); //It conversts the incomign json payload of a  request into a javascript object found in req.body
 
 // app.use(clerkMiddleware());
-app.use(cors({ origin: "http://localhost:5173" }));
+// app.use(cors({ origin: "http://localhost:5173" }));
+app.use(cors({ origin: "https://fed-2-front-end-yashod.vercel.app" }));
 
 // app.use((req, res, next) => {
 //   console.log("Hello from pre-middleware");
