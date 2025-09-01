@@ -9,6 +9,7 @@ import cors from "cors";
 import { orderRouter } from "./api/order";
 import colorRouter from "./api/color";
 import { clerkMiddleware } from "@clerk/express";
+import serverless from "serverless-http";
 
 const app = express();
 
@@ -31,7 +32,12 @@ app.use(globalErrorHandlingMiddleware);
 
 connectDB();
 
-const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+const PORT = process.env.PORT;
+if (PORT) {
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+    });
+}
+
+export const handler = serverless(app);
+
