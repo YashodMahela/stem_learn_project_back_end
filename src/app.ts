@@ -15,14 +15,10 @@ const app = express();
 // Middleware to parse JSON bodies
 app.use(express.json()); //It conversts the incomign json payload of a  request into a javascript object found in req.body
 
+const allowedFrontendOrigin = process.env.FRONTEND_URL;
 // app.use(clerkMiddleware());
-// app.use(cors({ origin: "http://localhost:5173" }));
-app.use(cors({ origin: "https://fed-2-front-end-yashod.vercel.app" }));
+app.use(cors({ origin: allowedFrontendOrigin }));
 
-// app.use((req, res, next) => {
-//   console.log("Hello from pre-middleware");
-//   next();
-// });
 
 app.use("/api/products", productRouter);
 app.use("/api/categories", categoryRouter);
