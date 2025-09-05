@@ -12,7 +12,8 @@ import { clerkMiddleware } from "@clerk/express";
 import serverless from "serverless-http";
 
 const app = express();
-
+// Connect to database
+connectDB();
 // IMPORTANT: Clerk middleware must be registered FIRST before any routes that use getAuth()
 // app.use(clerkMiddleware({
 //     // Optional: Add your publishable key for additional security
@@ -21,8 +22,7 @@ const app = express();
 //     secretKey: process.env.CLERK_SECRET_KEY
 // }));
 
-// Middleware to parse JSON bodies
-app.use(express.json());
+
 
 const allowedFrontendOrigin = process.env.FRONTEND_URL || "http://localhost:3000";
 
@@ -45,8 +45,7 @@ app.use("/api/colors", colorRouter);
 // Error handling middleware should be last
 app.use(globalErrorHandlingMiddleware);
 
-// Connect to database
-connectDB();
+
 
 const PORT = process.env.PORT || 3000;
 
