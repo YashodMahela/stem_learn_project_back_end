@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import { timeStamp } from "node:console";
+import { date } from "zod";
 
 const ItemSchema = new mongoose.Schema({
     productId: {
@@ -16,6 +18,14 @@ const OrderSchema = new mongoose.Schema({
     userId: { type: String, required: true },
     items: {
         type: [ItemSchema],
+        required: true,
+    },
+    date: {
+        type: Date,
+        default: Date.now,
+    },
+    totalAmount: {
+        type: Number,
         required: true,
     },
     addressId: {

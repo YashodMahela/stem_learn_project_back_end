@@ -13,26 +13,38 @@ import serverless from "serverless-http";
 
 const app = express();
 
+// IMPORTANT: Clerk middleware must be registered FIRST before any routes that use getAuth()
+// app.use(clerkMiddleware({
+//     // Optional: Add your publishable key for additional security
+//     publishableKey: process.env.CLERK_PUBLISHABLE_KEY,
+//     // Optional: Configure JWKS endpoint
+//     secretKey: process.env.CLERK_SECRET_KEY
+// }));
+
 // Middleware to parse JSON bodies
-app.use(express.json()); //It conversts the incomign json payload of a  request into a javascript object found in req.body
+app.use(express.json());
 
 const allowedFrontendOrigin = process.env.FRONTEND_URL;
-// app.use(clerkMiddleware());
-app.use(cors({ origin: allowedFrontendOrigin }));
+app.use(cors({
+    origin: allowedFrontendOrigin,
+    credentials: true // Important for Clerk authentication
+}));
 
-
+// Routes - these can now use getAuth() safely
 app.use("/api/products", productRouter);
 app.use("/api/categories", categoryRouter);
 app.use("/api/reviews", reviewRouter);
 app.use("/api/orders", orderRouter);
 app.use("/api/colors", colorRouter);
 
-
+// Error handling middleware should be last
 app.use(globalErrorHandlingMiddleware);
 
+// Connect to database
 connectDB();
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
+
 if (PORT) {
     app.listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`);
@@ -40,4 +52,3 @@ if (PORT) {
 }
 
 export const handler = serverless(app);
-
