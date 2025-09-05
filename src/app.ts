@@ -24,11 +24,16 @@ const app = express();
 // Middleware to parse JSON bodies
 app.use(express.json());
 
-const allowedFrontendOrigin = process.env.FRONTEND_URL;
-app.use(cors({
-    origin: allowedFrontendOrigin,
-    credentials: true // Important for Clerk authentication
-}));
+const allowedFrontendOrigin = process.env.FRONTEND_URL || "http://localhost:3000";
+
+app.use(
+    cors({
+        origin: allowedFrontendOrigin,
+        credentials: true,
+    })
+);
+
+app.use(express.json());
 
 // Routes - these can now use getAuth() safely
 app.use("/api/products", productRouter);
