@@ -26,12 +26,12 @@ app.use(express.json());
 
 const allowedFrontendOrigin = process.env.FRONTEND_URL || "http://localhost:3000";
 
-app.use(
-    cors({
-        origin: allowedFrontendOrigin,
-        credentials: true,
-    })
-);
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", allowedFrontendOrigin);
+    res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    next();
+});
 
 app.use(express.json());
 
