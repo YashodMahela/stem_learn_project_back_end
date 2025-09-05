@@ -1,11 +1,13 @@
 import express from "express";
-import { createOrder, getOrder, getOrdersByUserId } from "./../application/order";
+import { createOrder, getAllOrders, getDailySales, getOrder, getOrdersByUserId, getOrderStats } from "./../application/order";
 import isAuthenticated from "./middleware/authentication-middleware";
 
 export const orderRouter = express.Router();
 
-orderRouter.route("/").post(createOrder);
-orderRouter.route("/:id").get(getOrder);
-
+orderRouter.get("/stats", getOrderStats);
+orderRouter.get("/daily-sales", getDailySales);
+orderRouter.route("/").get(getAllOrders);
+orderRouter.post("/",createOrder);
+orderRouter.route("/:id").get(isAuthenticated,getOrder);
 // Get all orders for a specific user
-orderRouter.route("/").get(getOrdersByUserId);
+orderRouter.route("/:userId").get(isAuthenticated,getOrdersByUserId);
