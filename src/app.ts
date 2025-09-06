@@ -10,6 +10,9 @@ import { orderRouter } from "./api/order";
 import colorRouter from "./api/color";
 import { clerkMiddleware } from "@clerk/express";
 import serverless from "serverless-http";
+import { paymentsRouter } from "./api/payment";
+import { handleWebhook } from "./application/payment";
+import bodyParser from "body-parser";
 
 const app = express();
 // Connect to database
@@ -26,13 +29,18 @@ connectDB();
 
 const allowedFrontendOrigin = process.env.FRONTEND_URL || "http://localhost:3000";
 
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", allowedFrontendOrigin);
-    res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    next();
-});
+app.use(cors({
+    origin: allowedFrontendOrigin,
+    credentials: true
+}));
 
+
+
+app.post(
+    "/api/stripe/webhook",
+    bodyParser.raw({ type: "application/json" }),
+    handleWebhook
+);
 app.use(express.json());
 
 // Routes - these can now use getAuth() safely
@@ -41,6 +49,7 @@ app.use("/api/categories", categoryRouter);
 app.use("/api/reviews", reviewRouter);
 app.use("/api/orders", orderRouter);
 app.use("/api/colors", colorRouter);
+app.use("/api/payments", paymentsRouter);
 
 // Error handling middleware should be last
 app.use(globalErrorHandlingMiddleware);
