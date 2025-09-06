@@ -35,7 +35,7 @@ connectDB();
 //     credentials: true
 // }));
 const corsOptions = {
-    origin: 'https://fed-2-front-end-yashod.vercel.app', // Allow only your frontend
+    origin: 'http://localhost:5173', // Allow only your frontend
     optionsSuccessStatus: 200, // For legacy browser support
     credentials: true
 };
