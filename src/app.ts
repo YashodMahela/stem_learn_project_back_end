@@ -28,13 +28,19 @@ connectDB();
 
 
 // const allowedFrontendOrigin = process.env.FRONTEND_URL || "http://localhost:3000";
-const allowedFrontendOrigin = "https://fed-2-front-end-yashod.vercel.app";
+// const allowedFrontendOrigin = "https://fed-2-front-end-yashod.vercel.app";
 
-app.use(cors({
-    origin: allowedFrontendOrigin,
+// app.use(cors({
+//     origin: allowedFrontendOrigin,
+//     credentials: true
+// }));
+const corsOptions = {
+    origin: 'https://fed-2-front-end-yashod.vercel.app', // Allow only your frontend
+    optionsSuccessStatus: 200, // For legacy browser support
     credentials: true
-}));
+};
 
+app.use(cors(corsOptions));
 
 
 app.post(
