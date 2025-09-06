@@ -27,7 +27,8 @@ connectDB();
 
 
 
-const allowedFrontendOrigin = process.env.FRONTEND_URL || "http://localhost:3000";
+// const allowedFrontendOrigin = process.env.FRONTEND_URL || "http://localhost:3000";
+const allowedFrontendOrigin = "https://fed-2-front-end-yashod.vercel.app";
 
 app.use(cors({
     origin: allowedFrontendOrigin,
