@@ -14,8 +14,11 @@ import { handleWebhook } from "./application/payment";
 import bodyParser from "body-parser";
 
 const app = express();
+
+app.use(globalErrorHandlingMiddleware);
 // Connect to database
 connectDB();
+
 // IMPORTANT: Clerk middleware must be registered FIRST before any routes that use getAuth()
 // app.use(clerkMiddleware({
 //     // Optional: Add your publishable key for additional security
