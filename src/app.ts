@@ -8,7 +8,6 @@ import globalErrorHandlingMiddleware from "./api/middleware/global-error-handlin
 import cors from "cors";
 import { orderRouter } from "./api/order";
 import colorRouter from "./api/color";
-import { clerkMiddleware } from "@clerk/express";
 import serverless from "serverless-http";
 import { paymentsRouter } from "./api/payment";
 import { handleWebhook } from "./application/payment";
@@ -35,7 +34,7 @@ connectDB();
 //     credentials: true
 // }));
 const corsOptions = {
-    origin: 'http://localhost:5173', // Allow only your frontend
+    origin: 'https://fed-2-front-end-yashod.vercel.app', // Allow only your frontend
     optionsSuccessStatus: 200, // For legacy browser support
     credentials: true
 };
