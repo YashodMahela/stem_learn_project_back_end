@@ -3,7 +3,6 @@ import Address from "../infrastructure/db/entities/Address";
 import Order from "../infrastructure/db/entities/Order";
 import NotFoundError from "../domain/errors/not-found-error";
 import UnauthorizedError from "../domain/errors/unauthorized-error";
-import { getAuth } from "@clerk/express";
 
 const createOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -11,7 +10,6 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
     
     // Get user ID from Clerk authentication
     const userId  = req.body.userId ? req.body.userId : "" ;
-
     // // Check if user is authenticated
     // if (!userId) {
     //   throw new UnauthorizedError("User not authenticated");
@@ -74,7 +72,7 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
 
 const getOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = req.params.userId;
+    const userId = req.params.userId as string;
 
     const orderId = req.params.id;
 
@@ -99,13 +97,14 @@ const getOrder = async (req: Request, res: Response, next: NextFunction) => {
  */
 const getOrdersByUserId = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = req.query.userId as string;
+    const userId = req.params.userId as string;
     if (!userId) {
       return res.status(400).json({ error: "Missing userId query parameter." });
     }
 
     const orders = await Order.find({ userId });
-    res.status(200).json(orders);
+    res.status(200).json({orders,userId });
+    // res.status(200).json({orders,userId});
   } catch (error) {
     next(error);
   }
