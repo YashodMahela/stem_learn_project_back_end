@@ -15,15 +15,11 @@ interface Product {
 }
 
 async function fulfillCheckout(sessionId: string) {
-    console.log("Fulfilling Checkout Session " + sessionId);
 
     // Retrieve the Checkout Session from the API with line_items expanded
     const checkoutSession = await stripe.checkout.sessions.retrieve(sessionId, {
         expand: ["line_items"],
     });
-    console.log(
-        util.inspect(checkoutSession, false, null, true /* enable colors */)
-    );
 
     const order = await Order.findById(
         checkoutSession.metadata?.orderId
@@ -86,8 +82,7 @@ export const handleWebhook = async (req: Request, res: Response) => {
 export const createCheckoutSession = async (req: Request, res: Response) => {
     try {
         const { orderId } = req.body;
-        console.log("Request body:", req.body);
-        
+
         // Validate orderId
         if (!orderId) {
             return res.status(400).json({ error: "orderId is required" });
@@ -102,8 +97,6 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
             return res.status(404).json({ error: "Order not found" });
         }
 
-        console.log("Order found:", order);
-        console.log("Order items:", order.items);
 
         // Validate that order has items
         if (!order.items || order.items.length === 0) {
@@ -113,7 +106,6 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
         // Validate that all products have stripePriceId
         const invalidItems = order.items.filter(item => !item.productId.stripePriceId);
         if (invalidItems.length > 0) {
-            console.error("Items without stripePriceId:", invalidItems);
             return res.status(400).json({ error: "Some products don't have Stripe price ID" });
         }
 
@@ -131,14 +123,13 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
             },
         });
 
-        console.log("Session created successfully:", session.id);
+
 
         // Return client_secret (matching frontend expectation)
         res.json({ client_secret: session.client_secret });
-        
+
     } catch (error) {
-        console.error("Error creating checkout session:", error);
-        
+
         // Handle specific error types
         if (error instanceof Error) {
             res.status(500).json({ error: error.message });
@@ -151,7 +142,7 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
 export const retrieveSessionStatus = async (req: Request, res: Response) => {
     try {
         const sessionId = req.query.session_id as string;
-        
+
         if (!sessionId) {
             return res.status(400).json({ error: "session_id is required" });
         }
@@ -171,8 +162,6 @@ export const retrieveSessionStatus = async (req: Request, res: Response) => {
             paymentStatus: order.paymentStatus,
         });
     } catch (error) {
-        console.error("Error retrieving session status:", error);
-        
         if (error instanceof Error) {
             res.status(500).json({ error: error.message });
         } else {

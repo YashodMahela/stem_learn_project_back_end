@@ -8,10 +8,6 @@ const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
     //! auth will only be defined if the request sends a valid session token
     throw new UnauthorizedError("Unauthorized");
   }
-
-  //! By calling getAuth(req) we can get the auth data from the request
-  //! userId can be obtained from the auth object
-
   next();
 };
 

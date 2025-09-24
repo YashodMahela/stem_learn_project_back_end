@@ -70,10 +70,7 @@ const seed = async () => {
     for (const name of CATEGORY_NAMES) {
         const category = await Category.create({ name });
         await createProductsForCategory(category._id, name);
-        console.log(`Seeded category: ${name}`);
     }
-
-    console.log("Seeding complete.");
     process.exit(0);
 };
 

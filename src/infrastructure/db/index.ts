@@ -7,10 +7,8 @@ const connectDB = async () => {
             throw new Error("MongoDB connection string is not defined");
         }
         await mongoose.connect(MONGODB_URL);
-        console.log("Connected to the Database");
     } catch (error) {
         if (error instanceof Error) {
-            console.error("MongoDB connection failed:", error.message);
             process.exit(1);
         }
     }

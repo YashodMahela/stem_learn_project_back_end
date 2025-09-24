@@ -4,7 +4,7 @@ import NotFoundError from "../domain/errors/not-found-error";
 
 import { Request, Response, NextFunction } from "express";
 import { CreateProductDTO } from "../domain/dto/product";
-import category from "../api/category";
+
 
 const getAllProducts = async (
   req: Request,
@@ -55,7 +55,6 @@ const createProduct = async (
 ) => {
   try {
     const result = CreateProductDTO.safeParse(req.body);
-    console.log(result);
     if (!result.success) {
       throw new ValidationError(result.error.message);
     }
@@ -95,7 +94,9 @@ const updateProductById = async (
     if (!product) {
       throw new NotFoundError("Product not found");
     }
-    res.status(200).json(product);
+    const UpdateProductDTO = CreateProductDTO.partial();
+    const result = UpdateProductDTO.parse(req.body);
+    res.status(200).json(result);
   } catch (error) {
     next(error);
   }
