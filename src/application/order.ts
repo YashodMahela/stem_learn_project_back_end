@@ -15,7 +15,7 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
     //   throw new UnauthorizedError("User not authenticated");
     // }
     
-    // console.log("Authenticated user ID:", userId);
+
     
     // Validate required data
     if (!data.orderItems || !Array.isArray(data.orderItems) || data.orderItems.length === 0) {
@@ -28,7 +28,7 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
     
     // Create address and handle errors
     const address = await Address.create(data.shippingAddress);
-    console.log("Created address:", address._id);
+
     
     // Try to create the order and handle possible errors
     let order;
@@ -43,7 +43,6 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
         date: new Date(),
       });
       
-      console.log("Created order:", order._id);
       
       // Return the created order
       res.status(201).json({
@@ -57,14 +56,12 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
       });
       
     } catch (error: any) {
-      console.error("Order creation failed:", error);
       // If order creation fails, remove the created address to avoid orphan records
       await Address.findByIdAndDelete(address._id);
       throw new Error("Failed to create order: " + error.message);
     }
     
   } catch (error: any) {
-    console.error("Create order error:", error);
     next(error);
   }
 };

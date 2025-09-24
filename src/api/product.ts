@@ -10,12 +10,12 @@ import isAuthenticated from "./middleware/authentication-middleware";
 
 const productRouter = express.Router();
 
-productRouter.route("/").get(getAllProducts).post(createProduct);
+productRouter.route("/").get(getAllProducts).post(isAuthenticated,createProduct);
 
 productRouter
   .route("/:id")
   .get(getProductById)
-  .put(updateProductById)
-  .delete(deleteProductById);
+  .put(isAuthenticated,updateProductById)
+  .delete(isAuthenticated,deleteProductById);
 
 export default productRouter;
