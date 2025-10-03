@@ -36,7 +36,9 @@ const createProductsForCategory = async (categoryId: any, categoryName: string) 
         const name = getRandomName(categoryName);
         const description = `This is a ${categoryName} that is ${name}`;
         const price = Math.floor(Math.random() * 100) + 10;
-
+        const daysAgo = Math.floor(Math.random() * 30); 
+        const createdAt = new Date();
+        createdAt.setDate(createdAt.getDate() - daysAgo);
         // Create Stripe product and price
         const stripeProduct = await stripe.products.create({
             name: name,
@@ -56,7 +58,8 @@ const createProductsForCategory = async (categoryId: any, categoryName: string) 
             image: `https://via.placeholder.com/150?text=${encodeURIComponent(categoryName)}`,
             stock: Math.floor(Math.random() * 50) + 1,
             reviews: [],
-            stripePriceId: stripeProduct.default_price
+            stripePriceId: stripeProduct.default_price,
+            createdAt
         });
     }
     await Product.insertMany(products);
