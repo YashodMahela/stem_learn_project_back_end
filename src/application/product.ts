@@ -4,6 +4,8 @@ import NotFoundError from "../domain/errors/not-found-error";
 
 import { Request, Response, NextFunction } from "express";
 import { CreateProductDTO } from "../domain/dto/product";
+import Category from "../infrastructure/db/entities/Category";
+import { map } from "zod";
 
 
 const getAllProducts = async (
@@ -13,33 +15,34 @@ const getAllProducts = async (
 ) => {
   try {
     const { category, color, sortBy, sortOrder } = req.query;
-    
     // Build dynamic filter object
     const filter: any = {};
-    
+
     // Add category filter if provided
     if (category) {
       filter.categoryId = category;
     }
-    
+
     // Add color filter if provided
     if (color) {
       filter.color_id = color;
     }
+
     let sort: any = {};
+
     if (sortOrder && sortOrder !== 'default') {
-      // Sort by price when sortOrder is specified
       const order = sortOrder === 'desc' ? -1 : 1;
       sort.price = order;
     }
-    // Execute query with filters and sorting
-    let query = Product.find(filter);
-    
-    // Apply sorting if specified
+    //add pagination
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
+    let query = Product.find(filter).skip(skip).limit(limit);
+
     if (Object.keys(sort).length > 0) {
       query = query.sort(sort);
     }
-    
     const products = await query;
     res.json(products);
   } catch (error) {
@@ -47,7 +50,32 @@ const getAllProducts = async (
   }
 };
 
+const getNewArrivalProducts = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const categoryId = req.query.selectedCategoryId as string | undefined;
+    let products;
 
+    if (!categoryId || categoryId === "ALL") {
+      // Fetch all products (newest first)
+      products = await Product.find().sort({ createdAt: -1 }).limit(6);
+    } else {
+      // Fetch products by category
+      products = await Product.find({ categoryId })
+        .sort({ createdAt: -1 })
+        .limit(6);
+    }
+
+    console.log("Category:", categoryId);
+    res.json(products);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
 const createProduct = async (
   req: Request,
   res: Response,
@@ -122,6 +150,7 @@ export {
   createProduct,
   deleteProductById,
   getAllProducts,
+  getNewArrivalProducts,
   getProductById,
   updateProductById,
 };

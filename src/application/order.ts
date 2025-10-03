@@ -10,12 +10,6 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
     
     // Get user ID from Clerk authentication
     const userId  = req.body.userId ? req.body.userId : "" ;
-    // // Check if user is authenticated
-    // if (!userId) {
-    //   throw new UnauthorizedError("User not authenticated");
-    // }
-    
-
     
     // Validate required data
     if (!data.orderItems || !Array.isArray(data.orderItems) || data.orderItems.length === 0) {

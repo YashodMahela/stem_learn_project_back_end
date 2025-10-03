@@ -11,7 +11,7 @@ import colorRouter from "./api/color";
 import { paymentsRouter } from "./api/payment";
 import { handleWebhook } from "./application/payment";
 import bodyParser from "body-parser";
-import { clerkMiddleware } from "@clerk/express"; // ✅ Add this
+import { clerkMiddleware } from "@clerk/express";
 
 const app = express();
 
@@ -41,7 +41,7 @@ app.use(express.json());
 app.use("/api/products", productRouter);
 app.use("/api/categories", categoryRouter);
 app.use("/api/reviews", reviewRouter);
-app.use("/api/orders", orderRouter); // has isAuthenticated → needs Clerk
+app.use("/api/orders", orderRouter);
 app.use("/api/colors", colorRouter);
 app.use("/api/payments", paymentsRouter);
 

@@ -46,6 +46,7 @@ const OrderSchema = new mongoose.Schema({
         enum: ["PENDING", "PAID", "REFUNDED"],
         default: "PENDING",
     },
+    createdAt: { type: Date, default: Date.now },
 });
 
 const Order = mongoose.model("Order", OrderSchema);
